@@ -67,23 +67,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                   console.log('hello');
                 }}
               />
-            
-{/*               <TextField2
-                label="What to do?"
-                value={name}
-                onChange={event => {
-                  setTodos([
-                    // immutable update
-                    ...todos.slice(0, index),
-                    event.target.value,
-                    ...todos.slice(index + 1)
-                  ]);
-                }}
-                onClick={event => {
-                  alert('hello textfield');
-                }}
-                className={classes.textField}
-              /> */}
 
               <Button
                 size="small"
