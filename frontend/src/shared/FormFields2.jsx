@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { FormControl, InputLabel, Input } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import CheckIcon from '@material-ui/icons/CheckCircle';
+import Checkbox from '@material-ui/core/Checkbox';
 
 // ({ value, onChange, label, className }) =>
 export default class TextField2 extends React.Component {
@@ -9,13 +8,25 @@ export default class TextField2 extends React.Component {
     super(props);
 
     this.state = {
-      isDone: false
+      isDone: false,
+      checkboxValue: false
     };
   }
 
   changeDoneState() {
     if (this.props.value.length > 0) {
-      this.setState({ isDone: !this.state.isDone });
+      this.setState({
+        isDone: !this.state.isDone,
+        checkboxValue: !this.state.checkboxValue
+      });
+    } else {
+      this.setState({ checkboxValue: false, isDone: false });
+    }
+  }
+
+  validInputForDone() {
+    if (this.props.value.length > 0) {
+      this.setState({ checkboxDisable: false });
     }
   }
 
@@ -26,6 +37,13 @@ export default class TextField2 extends React.Component {
 
     return (
       <Fragment>
+        <Checkbox
+          color="primary"
+          checked={this.state.checkboxValue}
+          onChange={() => {
+            this.changeDoneState();
+          }}
+        />
         <FormControl className={this.props.className}>
           <InputLabel>{this.props.label}</InputLabel>
           <Input
@@ -34,15 +52,6 @@ export default class TextField2 extends React.Component {
             style={backgroundStyle}
           />
         </FormControl>
-        <Button
-          size="small"
-          color="primary"
-          onClick={() => {
-            this.changeDoneState();
-          }}
-        >
-          <CheckIcon />
-        </Button>
       </Fragment>
     );
   }
