@@ -62,6 +62,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                     event.target.value,
                     ...todos.slice(index + 1)
                   ]);
+                  saveToDoList(toDoList.id, { todos });
                 }}
               />
 
