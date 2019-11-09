@@ -1,5 +1,5 @@
 const listUpdate = (listId, { todos }) => {
-  return fetch('http://localhost:3001/lists/update1', {
+  return fetch('http://localhost:3001/lists/update', {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
