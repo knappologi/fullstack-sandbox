@@ -33,9 +33,10 @@ const getPersonalTodos = () => {
 
 const fetchToDoLists = async () => {
   const response = await fetch('http://localhost:3001/lists');
-  const lists = await response.json();
-  return lists;
+  return await response.json();
 };
+
+
 
 export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({});
@@ -44,6 +45,16 @@ export const ToDoLists = ({ style }) => {
   useEffect(() => {
     fetchToDoLists().then(setToDoLists);
   }, []);
+
+  const saveToDoLists = (id, { todos }) => {
+    console.log('todos are: ' + todos);
+    const listToUpdate = toDoLists[id];
+    setToDoLists({
+      ...toDoLists,
+      [id]: { ...listToUpdate, todos }
+    });
+    TodoSaver(id, { todos });
+  }
 
   if (!Object.keys(toDoLists).length) return null;
   return (
@@ -67,15 +78,7 @@ export const ToDoLists = ({ style }) => {
         <ToDoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           toDoList={toDoLists[activeList]}
-          saveToDoList={(id, { todos }) => {
-            console.log('todos are: ' + todos);
-            const listToUpdate = toDoLists[id];
-            setToDoLists({
-              ...toDoLists,
-              [id]: { ...listToUpdate, todos }
-            });
-            TodoSaver(id, { todos });
-          }}
+          saveToDoList={saveToDoLists}
         />
       )}
     </Fragment>
