@@ -8,7 +8,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import Typography from '@material-ui/core/Typography';
 import { ToDoListForm } from './ToDoListForm';
-import  TodoSaver from '../../shared/TodoSaver';
+import TodoSaver from '../../shared/TodoSaver';
 
 /*
 // const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -68,7 +68,7 @@ export const ToDoLists = ({ style }) => {
           key={activeList} // use key to make React recreate component to reset internal state
           toDoList={toDoLists[activeList]}
           saveToDoList={(id, { todos }) => {
-            console.log('todos are: ' + todos)
+            console.log('todos are: ' + todos);
             const listToUpdate = toDoLists[id];
             setToDoLists({
               ...toDoLists,
