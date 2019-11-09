@@ -9,6 +9,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import TextField from '../../shared/FormFields2';
 // import { TextField2 } from '../../shared/FormFields'
+import TodoSaver from '../../shared/TodoSaver';
 
 const useStyles = makeStyles({
   card: {
@@ -62,6 +63,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                     event.target.value,
                     ...todos.slice(index + 1)
                   ]);
+                  saveToDoList(toDoList.id, { todos });
                 }}
               />
 
