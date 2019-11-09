@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Button from '@material-ui/core/Button'
-import DeleteIcon from '@material-ui/icons/Delete'
-import AddIcon from '@material-ui/icons/Add'
-import Typography from '@material-ui/core/Typography'
-import TextField from '../../shared/FormFields2'
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/styles';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import Typography from '@material-ui/core/Typography';
+import TextField from '../../shared/FormFields2';
 // import { TextField2 } from '../../shared/FormFields'
 
 const useStyles = makeStyles({
@@ -29,16 +29,16 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     flexGrow: 1
   }
-})
+});
 
 export const ToDoListForm = ({ toDoList, saveToDoList }) => {
-  const classes = useStyles()
-  const [todos, setTodos] = useState(toDoList.todos)
+  const classes = useStyles();
+  const [todos, setTodos] = useState(toDoList.todos);
 
   const handleSubmit = event => {
-    event.preventDefault()
-    saveToDoList(toDoList.id, { todos })
-  }
+    event.preventDefault();
+    saveToDoList(toDoList.id, { todos });
+  };
 
   return (
     <Card className={classes.card}>
@@ -62,9 +62,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                     event.target.value,
                     ...todos.slice(index + 1)
                   ]);
-                }}
-                onClick={event => {
-                  console.log('hello');
                 }}
               />
 
@@ -99,7 +96,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               variant="contained"
               color="primary"
               onClick={() => {
-                alert('gonna save!');
+                console.log('gonna save!');
               }}
             >
               Save
@@ -109,4 +106,4 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
       </CardContent>
     </Card>
   );
-}
+};

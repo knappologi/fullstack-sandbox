@@ -1,17 +1,15 @@
-const listSaver = (listId, { todos }) => {
-    console.log(listId);
-    console.log(todos[0]);
+const listUpdate = (listId, { todos }) => {
+  return fetch('http://localhost:3001/lists/update1', {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: listId,
+      todos: todos
+    })
+  }).then(response => console.log(response));
+};
 
-    return fetch('http://localhost:3001/lists/update', {
-        method: 'PUT',
-        body: JSON.stringify({
-            /*
-            id: listId,
-            todos: { todos }
-            */
-           id: 'wow'
-        })
-    }).then(response => console.log(response))}
-
-export default listSaver;
-  
+export default listUpdate;
