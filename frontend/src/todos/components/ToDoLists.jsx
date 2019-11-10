@@ -45,7 +45,6 @@ export const ToDoLists = ({ style }) => {
   }, []);
 
   const saveToDoLists = (id, { todos }) => {
-    console.log('todos are: ' + todos);
     const listToUpdate = toDoLists[id];
     setToDoLists({
       ...toDoLists,
