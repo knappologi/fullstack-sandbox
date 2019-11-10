@@ -8,7 +8,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import Typography from '@material-ui/core/Typography'
 import { ToDoListForm } from './ToDoListForm'
+import axios from 'axios';
 
+/*
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const getPersonalTodos = () => {
@@ -24,14 +26,37 @@ const getPersonalTodos = () => {
       todos: ['First todo of second list!']
     }
   }))
-}
+} */
+
+const fetchLists = () => {
+  return axios
+    .get('http://localhost:3001/lists')
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => console.log(error));
+};
+
+const listUpdate = (listId, { todos }) => {
+  axios
+    .put('http://localhost:3001/lists/update', {
+      id: listId,
+      todos: todos
+    })
+    .then(function(response) {
+      console.log(response);
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+};
 
 export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({})
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-    getPersonalTodos()
+    fetchLists()
       .then(setToDoLists)
   }, [])
 
@@ -67,6 +92,7 @@ export const ToDoLists = ({ style }) => {
           ...toDoLists,
           [id]: { ...listToUpdate, todos }
         })
+        listUpdate(id, { todos })
       }}
     />}
   </Fragment>

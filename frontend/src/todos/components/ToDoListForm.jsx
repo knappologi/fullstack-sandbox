@@ -59,7 +59,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                     ...todos.slice(0, index),
                     event.target.value,
                     ...todos.slice(index + 1)
-                  ])
+                  ]);
+                  saveToDoList(toDoList.id, { todos })
                 }}
                 className={classes.textField}
               />
@@ -68,10 +69,13 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                 color='secondary'
                 className={classes.standardSpace}
                 onClick={() => {
+                  /*
                   setTodos([ // immutable delete
                     ...todos.slice(0, index),
                     ...todos.slice(index + 1)
-                  ])
+                  ])*/
+                  todos.splice(index, 1)
+                  saveToDoList(toDoList.id, { todos });
                 }}
               >
                 <DeleteIcon />
