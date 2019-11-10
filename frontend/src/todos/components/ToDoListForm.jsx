@@ -71,11 +71,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                 color="secondary"
                 className={classes.standardSpace}
                 onClick={() => {
-                  setTodos([
-                    // immutable delete
-                    ...todos.slice(0, index),
-                    ...todos.slice(index + 1)
-                  ]);
+                  todos.splice(index, 1)
+                  saveToDoList(toDoList.id, { todos });
                 }}
               >
                 <DeleteIcon />
@@ -96,9 +93,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               type="submit"
               variant="contained"
               color="primary"
-              onClick={() => {
-                console.log('gonna save!');
-              }}
             >
               Save
             </Button>

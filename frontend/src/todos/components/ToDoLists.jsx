@@ -36,8 +36,6 @@ const fetchToDoLists = async () => {
   return await response.json();
 };
 
-
-
 export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({});
   const [activeList, setActiveList] = useState();
@@ -54,7 +52,7 @@ export const ToDoLists = ({ style }) => {
       [id]: { ...listToUpdate, todos }
     });
     TodoSaver(id, { todos });
-  }
+  };
 
   if (!Object.keys(toDoLists).length) return null;
   return (
