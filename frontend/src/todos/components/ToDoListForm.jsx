@@ -7,8 +7,8 @@ import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
-import TextField from '../../shared/FormFields2';
-// import { TextField2 } from '../../shared/FormFields'
+import { TextField } from '../../shared/FormFields';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles({
   card: {
@@ -40,32 +40,64 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
     saveToDoList(toDoList.id, { todos });
   };
 
+  /**
+   * Autosave not working for identifying correct checkbox input, due to asynch
+   * @param {*} list the complete list
+   * @param {*} todos collection of todos (text and if done)
+   */
+  const checkIfListComplete = (list, { todos }) => {
+    list.done = true;
+    todos.forEach(todoItem => {
+      if (!todoItem.done) {
+        list.done = false;
+      }
+    });
+  };
+
   return (
     <Card className={classes.card}>
       <CardContent>
         <Typography component="h2">{toDoList.title}</Typography>
         <form onSubmit={handleSubmit} className={classes.form}>
-          {todos.map((name, index) => (
+          {todos.map((todoItem, index) => (
             <div key={index} className={classes.todoLine}>
               <Typography className={classes.standardSpace} variant="h6">
                 {index + 1}
               </Typography>
 
+              <Checkbox
+                checked={todoItem.done}
+                onChange={() => {
+                  // Do not allow todos to be done if empty
+                  if (todoItem.text.length > 0) {
+                    setTodos([
+                      // immutable update
+                      ...todos.slice(0, index),
+                      { text: todoItem.text, done: !todoItem.done },
+                      ...todos.slice(index + 1)
+                    ]);
+                    checkIfListComplete(toDoList, { todos });
+                    saveToDoList(toDoList.id, { todos });
+                  }
+                }}
+                color="primary"
+              />
+
               <TextField
-                label="What to do?"
-                className={classes.textField}
-                value={name}
+                label={todoItem.text.length > 0 ? '' : 'What to do?'}
+                value={todoItem.text}
+                fieldColor={todoItem.done ? '#dde4ff' : 'white'}
                 onChange={event => {
                   setTodos([
                     // immutable update
                     ...todos.slice(0, index),
-                    event.target.value,
+                    { text: event.target.value, done: false },
                     ...todos.slice(index + 1)
                   ]);
-                  saveToDoList(toDoList.id, { todos });
+                  saveToDoList(toDoList.id, { todos }); // Autosave is dropping the last letter, due to setTodo being asynch :/
                 }}
+                className={classes.textField}
               />
-
               <Button
                 size="small"
                 color="secondary"
@@ -76,6 +108,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                     ...todos.slice(0, index),
                     ...todos.slice(index + 1)
                   ]);
+                  todos.splice(index, 1);
+                  saveToDoList(toDoList.id, { todos });
                 }}
               >
                 <DeleteIcon />
@@ -87,19 +121,13 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               type="button"
               color="primary"
               onClick={() => {
-                setTodos([...todos, '']);
+                // Creates new todo, empty text field and not done by default
+                setTodos([...todos, { text: '', done: false }]);
               }}
             >
               Add Todo <AddIcon />
             </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                console.log('gonna save!');
-              }}
-            >
+            <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
           </CardActions>

@@ -8,53 +8,38 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import Typography from '@material-ui/core/Typography';
 import { ToDoListForm } from './ToDoListForm';
-import TodoSaver from '../../shared/TodoSaver';
+import axios from 'axios';
 
-/*
-// const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-const getPersonalTodos = () => {
-  return sleep(1000).then(() =>
-    Promise.resolve({
-      '0000000001': {
-        id: '0000000001',
-        title: 'First List',
-        todos: ['First todo of first list!']
-      },
-      '0000000002': {
-        id: '0000000002',
-        title: 'Second List',
-        todos: ['First todo of second list!']
-      }
+const fetchLists = () => {
+  return axios
+    .get('http://localhost:3001/lists')
+    .then(response => {
+      return response.data;
     })
-  );
-};
-*/
-
-const fetchToDoLists = async () => {
-  const response = await fetch('http://localhost:3001/lists');
-  return await response.json();
+    .catch(error => console.log(error));
 };
 
-
+const updateLists = (listId, { todos }) => {
+  axios
+    .put('http://localhost:3001/lists/update', {
+      id: listId,
+      todos: todos
+    })
+    .then(response => {
+      console.log(response);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
 
 export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({});
   const [activeList, setActiveList] = useState();
 
   useEffect(() => {
-    fetchToDoLists().then(setToDoLists);
+    fetchLists().then(setToDoLists);
   }, []);
-
-  const saveToDoLists = (id, { todos }) => {
-    console.log('todos are: ' + todos);
-    const listToUpdate = toDoLists[id];
-    setToDoLists({
-      ...toDoLists,
-      [id]: { ...listToUpdate, todos }
-    });
-    TodoSaver(id, { todos });
-  }
 
   if (!Object.keys(toDoLists).length) return null;
   return (
@@ -64,11 +49,26 @@ export const ToDoLists = ({ style }) => {
           <Typography component="h2">My ToDo Lists</Typography>
           <List>
             {Object.keys(toDoLists).map(key => (
-              <ListItem key={key} button onClick={() => setActiveList(key)}>
+              <ListItem
+                key={key}
+                button
+                onClick={() => {
+                  fetchLists().then(setToDoLists);
+                  setActiveList(key);
+                }}
+              >
                 <ListItemIcon>
                   <ReceiptIcon />
                 </ListItemIcon>
-                <ListItemText primary={toDoLists[key].title} />
+                <ListItemText
+                  primary={toDoLists[key].title}
+                  // Strike trhough list title if all items are done
+                  style={{
+                    textDecoration: toDoLists[key].done
+                      ? 'line-through'
+                      : 'none'
+                  }}
+                />
               </ListItem>
             ))}
           </List>
@@ -78,7 +78,9 @@ export const ToDoLists = ({ style }) => {
         <ToDoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           toDoList={toDoLists[activeList]}
-          saveToDoList={saveToDoLists}
+          saveToDoList={(id, { todos }) => {
+            updateLists(id, { todos });
+          }}
         />
       )}
     </Fragment>
