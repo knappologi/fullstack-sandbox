@@ -62,7 +62,7 @@ export const ToDoLists = ({ style }) => {
                 </ListItemIcon>
                 <ListItemText
                   primary={toDoLists[key].title}
-                  // Strike trhough list title if all items are done
+                  // Strike through list title if all items are done
                   style={{
                     textDecoration: toDoLists[key].done
                       ? 'line-through'

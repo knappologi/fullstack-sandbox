@@ -41,18 +41,19 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
   };
 
   /**
-   * Autosave not working for identifying correct checkbox input, due to asynch
+   * Sets if list is complete, check is done in backend too
    * @param {*} list the complete list
    * @param {*} todos collection of todos (text and if done)
    */
-  const checkIfListComplete = (list, { todos }) => {
+/*   const checkIfListComplete = (list, { todos }) => {
     list.done = true;
     todos.forEach(todoItem => {
       if (!todoItem.done) {
         list.done = false;
+        console.log(JSON.stringify(list));
       }
     });
-  };
+  }; */
 
   return (
     <Card className={classes.card}>
@@ -70,14 +71,14 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                 onChange={() => {
                   // Do not allow todos to be done if empty
                   if (todoItem.text.length > 0) {
-                    setTodos([
-                      // immutable update
+                    const updatedTodo = [
                       ...todos.slice(0, index),
                       { text: todoItem.text, done: !todoItem.done },
                       ...todos.slice(index + 1)
-                    ]);
-                    checkIfListComplete(toDoList, { todos });
-                    saveToDoList(toDoList.id, { todos });
+                    ];
+                    setTodos(updatedTodo);
+                    saveToDoList(toDoList.id, { todos: updatedTodo });
+                    // checkIfListComplete(toDoList, { todos:updatedTodo })
                   }
                 }}
                 color="primary"
@@ -88,13 +89,13 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                 value={todoItem.text}
                 fieldColor={todoItem.done ? '#dde4ff' : 'white'}
                 onChange={event => {
-                  setTodos([
-                    // immutable update
+                  const updatedTodo = [
                     ...todos.slice(0, index),
                     { text: event.target.value, done: false },
                     ...todos.slice(index + 1)
-                  ]);
-                  saveToDoList(toDoList.id, { todos }); // Autosave is dropping the last letter, due to setTodo being asynch :/
+                  ];
+                  setTodos(updatedTodo);
+                  saveToDoList(toDoList.id, { todos: updatedTodo });
                 }}
                 className={classes.textField}
               />
