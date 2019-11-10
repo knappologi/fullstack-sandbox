@@ -8,7 +8,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import Typography from '@material-ui/core/Typography';
 import { ToDoListForm } from './ToDoListForm';
-import TodoSaver from '../../shared/TodoSaver';
+import axios from 'axios';
+// import TodoSaver from '../../shared/TodoSaver';
 
 /*
 // const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -31,9 +32,35 @@ const getPersonalTodos = () => {
 };
 */
 
+/*
 const fetchToDoLists = async () => {
   const response = await fetch('http://localhost:3001/lists');
   return await response.json();
+};
+*/
+
+const fetchLists = () => {
+  return axios
+    .get('http://localhost:3001/lists')
+    .then(response => {
+      console.log(response);
+      return response.data;
+    })
+    .catch(error => console.log(error));
+};
+
+const listUpdate = (listId, { todos }) => {
+  axios
+    .put('http://localhost:3001/lists/update', {
+      id: listId,
+      todos: todos
+    })
+    .then(function(response) {
+      console.log(response);
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
 };
 
 export const ToDoLists = ({ style }) => {
@@ -41,7 +68,7 @@ export const ToDoLists = ({ style }) => {
   const [activeList, setActiveList] = useState();
 
   useEffect(() => {
-    fetchToDoLists().then(setToDoLists);
+    fetchLists().then(setToDoLists);
   }, []);
 
   const saveToDoLists = (id, { todos }) => {
@@ -50,7 +77,8 @@ export const ToDoLists = ({ style }) => {
       ...toDoLists,
       [id]: { ...listToUpdate, todos }
     });
-    TodoSaver(id, { todos });
+    listUpdate(id, { todos });
+    //TodoSaver(id, { todos });
   };
 
   if (!Object.keys(toDoLists).length) return null;
