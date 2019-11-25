@@ -1,27 +1,30 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ReceiptIcon from '@material-ui/icons/Receipt';
-import Typography from '@material-ui/core/Typography';
-import { ToDoListForm } from './ToDoListForm';
-import axios from 'axios';
+import React, { Fragment, useState, useEffect } from "react";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ReceiptIcon from "@material-ui/icons/Receipt";
+import Typography from "@material-ui/core/Typography";
+import { ToDoListForm } from "./ToDoListForm";
+import axios from "axios";
+import lodash from "lodash";
 
 const fetchLists = () => {
   return axios
-    .get('http://localhost:3001/lists')
+    .get("http://localhost:3001/lists")
     .then(response => {
       return response.data;
     })
     .catch(error => console.log(error));
 };
 
+// The func is invoked with the last arguments provided to the debounced function.
+
 const updateLists = (listId, { todos }) => {
   axios
-    .put('http://localhost:3001/lists/update', {
+    .put("http://localhost:3001/lists/update", {
       id: listId,
       todos: todos
     })
@@ -32,6 +35,22 @@ const updateLists = (listId, { todos }) => {
       console.log(error);
     });
 };
+const debounceUpdate = lodash.debounce(updateLists, 1000);
+
+const checkIfListIsDone = toDoList => {
+  const isTodoDone = currentTodo => currentTodo.done;
+
+  return toDoList.todos.every(isTodoDone);
+
+  /*
+  let listIsDone = true;
+  toDoList.todos.forEach(todo => {
+    if (!todo.done) {
+      listIsDone = false;
+    }
+  });
+  return listIsDone; */
+};
 
 export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({});
@@ -39,6 +58,7 @@ export const ToDoLists = ({ style }) => {
 
   useEffect(() => {
     fetchLists().then(setToDoLists);
+    // fetchLists().then((result) => setToDoLists(result));
   }, []);
 
   if (!Object.keys(toDoLists).length) return null;
@@ -53,7 +73,6 @@ export const ToDoLists = ({ style }) => {
                 key={key}
                 button
                 onClick={() => {
-                  fetchLists().then(setToDoLists);
                   setActiveList(key);
                 }}
               >
@@ -64,9 +83,9 @@ export const ToDoLists = ({ style }) => {
                   primary={toDoLists[key].title}
                   // Strike through list title if all items are done
                   style={{
-                    textDecoration: toDoLists[key].done
-                      ? 'line-through'
-                      : 'none'
+                    textDecoration: checkIfListIsDone(toDoLists[key])
+                      ? "line-through"
+                      : "none"
                   }}
                 />
               </ListItem>
@@ -79,7 +98,13 @@ export const ToDoLists = ({ style }) => {
           key={activeList} // use key to make React recreate component to reset internal state
           toDoList={toDoLists[activeList]}
           saveToDoList={(id, { todos }) => {
-            updateLists(id, { todos });
+            debounceUpdate(id, { todos });
+            // updateLists(id, { todos });
+            const listToUpdate = toDoLists[id];
+            setToDoLists({
+              ...toDoLists,
+              [id]: { ...listToUpdate, todos }
+            });
           }}
         />
       )}

@@ -68,9 +68,9 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
 
               <Checkbox
                 checked={todoItem.done}
+                disabled = {todoItem.text ? false : true} 
                 onChange={() => {
                   // Do not allow todos to be done if empty
-                  if (todoItem.text.length > 0) {
                     const updatedTodo = [
                       ...todos.slice(0, index),
                       { text: todoItem.text, done: !todoItem.done },
@@ -80,7 +80,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                     saveToDoList(toDoList.id, { todos: updatedTodo });
                     // checkIfListComplete(toDoList, { todos:updatedTodo })
                   }
-                }}
+                }
                 color="primary"
               />
 
